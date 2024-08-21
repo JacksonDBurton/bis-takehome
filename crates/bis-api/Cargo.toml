@@ -1,0 +1,14 @@
+[package]
+name = "bis-api"
+version = "0.1.0"
+description = "Api for interacting via CRUD actions with Book Information Store"
+
+repository.workspace = true
+authors.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+
+[lints]
+workspace = true
+
+[dependencies]

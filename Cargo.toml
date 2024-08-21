@@ -1,6 +1,14 @@
-[package]
-name = "bis_takehome"
-version = "0.1.0"
-edition = "2021"
+[workspace]
+members = ["crates/*"]
+resolver = "2"
 
-[dependencies]
+[workspace.package]
+rust-version = "1.80"
+edition = "2021"
+authors = ["Jack Burton <jburton0@outlook.com>"]
+repository = "https://gihub.com/JacksonDBurton/bis-takehome"
+
+[workspace.lints.rust]
+unsafe_code = "forbid"
+
+[workspace.dependencies]

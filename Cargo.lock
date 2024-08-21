@@ -3,5 +3,9 @@
 version = 3
 
 [[package]]
-name = "bis_takehome"
+name = "bis-api"
+version = "0.1.0"
+
+[[package]]
+name = "bis-store"
 version = "0.1.0"
