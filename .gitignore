@@ -1,0 +1,10 @@
+/debug/
+/target/
+crates/*/target
+
+**/*.rs.bk
+*.pdb
+
+
+.idea/*
+.vscode/settings.json
