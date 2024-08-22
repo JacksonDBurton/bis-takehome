@@ -1,0 +1,16 @@
+[package]
+name = "bis-in-memory"
+version = "0.1.0"
+description = "Simple in memory storage for BIS"
+
+
+rust-version.workspace = true
+edition.workspace = true
+authors.workspace = true
+repository.workspace = true
+
+[dependencies]
+time = "0.3.36"
+
+[lints]
+workspace = true
