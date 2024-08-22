@@ -8,9 +8,9 @@ pub fn establish_connection() -> Store {
 
 pub fn create_book(
     conn: &Store,
-    title: &str,
-    author: &str,
-    date_published: &chrono::NaiveDate,
+    title: String,
+    author: String,
+    date_published: chrono::NaiveDate,
 ) -> Book {
     let new_book = NewBook {
         title,

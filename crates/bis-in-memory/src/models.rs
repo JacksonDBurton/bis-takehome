@@ -23,11 +23,13 @@ pub struct Book {
     pub date_published: chrono::NaiveDate,
 }
 
-#[derive(Debug)]
-pub struct NewBook<'a> {
-    pub title: &'a str,
-    pub author: &'a str,
-    pub date_published: &'a chrono::NaiveDate,
+#[derive(Debug, Deserialize, ToSchema)]
+pub struct NewBook {
+    pub title: String,
+    pub author: String,
+    #[serde(with = "simple_date_format")]
+    #[schema(value_type = String, format = "%Y-%m-%d", example = "2024-08-22")]
+    pub date_published: chrono::NaiveDate,
 }
 
 impl Store {
@@ -50,7 +52,7 @@ impl Store {
             id: raw_id,
             title: title.to_string(),
             author: author.to_string(),
-            date_published: *date_published,
+            date_published,
         };
         self.book_store.lock().unwrap().insert(raw_id, book.clone());
         book

@@ -1,38 +1,48 @@
-use std::sync::Mutex;
-
 use actix_web::{error, web, HttpRequest, HttpResponse, Responder, Result};
-use bis_in_memory::models::{simple_date_format, Book, NewBook, Store};
+use bis_in_memory::models::{Book, NewBook, Store};
 use serde::{Deserialize, Serialize};
 use utoipa::ToSchema;
 
 // TODO: Handle serde errors
+// TODO: Reconsider error handling all together
 
-#[derive(Deserialize)]
-pub struct ReqNewBook {
-    title: String,
-    author: String,
-    #[serde(with = "simple_date_format")]
-    date_published: chrono::NaiveDate,
-}
-
+#[utoipa::path(
+    post,
+    tag = "Book Information System Api",
+    path = "/bis",
+    request_body = NewBook,
+    responses(
+        (status = 200, description = "Book created successfully", body = Book),
+    ),
+)]
 pub async fn create_book(
     pool: web::Data<Store>,
-    info: web::Json<ReqNewBook>,
+    info: web::Json<NewBook>,
 ) -> Result<impl Responder> {
     let book = pool.create_book(NewBook {
-        title: &info.title,
-        author: &info.author,
-        date_published: &info.date_published,
+        title: info.title.clone(),
+        author: info.author.clone(),
+        date_published: info.date_published,
     });
 
     Ok(web::Json(book))
 }
 
-#[derive(Serialize)]
-struct Id {
-    id: i32,
+#[derive(Serialize, ToSchema)]
+pub struct Id {
+    pub id: i32,
 }
 
+#[utoipa::path(
+    put,
+    tag = "Book Information System Api",
+    path = "/bis",
+    request_body = Book,
+    responses(
+        (status = 200, description = "Book updated successfully", body = Id),
+        (status = 404, description = "No book with given id to update", body = String),
+    ),
+)]
 pub async fn update_book(pool: web::Data<Store>, book: web::Json<Book>) -> Result<impl Responder> {
     let book_id = book.id;
     if let Some(id) = pool.update_book(book_id, book.into_inner()) {
@@ -45,6 +55,15 @@ pub async fn update_book(pool: web::Data<Store>, book: web::Json<Book>) -> Resul
     }
 }
 
+#[utoipa::path(
+    get,
+    tag = "Book Information System Api",
+    path = "/bis",
+    responses(
+        (status = 200, description = "Books retrieved successfully", body = Vec<Book>),
+        (status = 200, description = "Book Store is empty", body = String),
+    ),
+)]
 pub async fn get_books(pool: web::Data<Store>, _: HttpRequest) -> Result<impl Responder> {
     // TODO: Fix unwrap on mutex
     let book_list = pool.get_books();
@@ -55,9 +74,9 @@ pub async fn get_books(pool: web::Data<Store>, _: HttpRequest) -> Result<impl Re
     }
 }
 
-// TODO: Should not return an option
 #[utoipa::path(
     get,
+    tag = "Book Information System Api",
     path = "/bis/{book_id}",
     responses(
         (status = 200, description = "Book found successfully", body = Book),
@@ -75,11 +94,21 @@ pub async fn get_book(pool: web::Data<Store>, path: web::Path<(i32,)>) -> Result
     }
 }
 
-#[derive(Deserialize)]
+#[derive(Deserialize, ToSchema)]
 pub struct ListIds {
-    ids: Vec<i32>,
+    pub ids: Vec<i32>,
 }
 
+#[utoipa::path(
+    delete,
+    tag = "Book Information System Api",
+    path = "/bis",
+    request_body = ListIds,
+    responses(
+        (status = 200, description = "Books were deleted", body = i32),
+        (status = 404, description = "No books were found for deletion", body = String),
+    ),
+)]
 pub async fn delete_book(
     pool: web::Data<Store>,
     del_list: web::Json<ListIds>,

@@ -40,9 +40,9 @@ async fn main() -> io::Result<()> {
 
     let conn = web::Data::new(establish_connection());
     conn.create_book(NewBook {
-        title: "Jack Burton",
-        author: "Also Jack Burton",
-        date_published: &chrono::offset::Utc::now().naive_utc().date(),
+        title: "Jack Burton".to_string(),
+        author: "Also Jack Burton".to_string(),
+        date_published: chrono::offset::Utc::now().naive_utc().date(),
     });
 
     //TODO: Fix start location
