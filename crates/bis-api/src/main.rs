@@ -1,16 +1,10 @@
-mod api;
-mod configuration;
-mod docs;
-mod startup;
-
 use std::{env, io, net::TcpListener};
 
+use bis_api::{configuration::get_configuration, startup::run};
 use bis_in_memory::{
     establish_connection,
     models::{NewBook, Store},
 };
-use configuration::get_configuration;
-use startup::run;
 
 // Name of the application
 const APP_NAME: &str = env!("CARGO_PKG_NAME");

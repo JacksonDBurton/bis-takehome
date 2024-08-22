@@ -40,6 +40,18 @@ impl ResponseError for BookError {
 }
 
 #[utoipa::path(
+    get,
+    tag = "Book Information System Api",
+    path = "/healthcheck",
+    responses(
+        (status = 200, description = "Health is Good"),
+    ),
+)]
+pub async fn health_check(_: HttpRequest) -> impl Responder {
+    HttpResponse::Ok()
+}
+
+#[utoipa::path(
     post,
     tag = "Book Information System Api",
     path = "/bis",

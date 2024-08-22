@@ -16,6 +16,7 @@ pub fn run(listener: TcpListener, pool: Store) -> Result<Server, std::io::Error>
         App::new()
             .wrap(Logger::default())
             .service(web::resource("/").route(web::get().to(api::get_books)))
+            .service(web::resource("/healthcheck").route(web::get().to(api::health_check)))
             .service(
                 web::scope("/bis")
                     .route("", web::get().to(api::get_books))

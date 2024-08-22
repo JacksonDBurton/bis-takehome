@@ -10,6 +10,7 @@ use crate::api;
         super::api::get_books,
         super::api::get_book,
         super::api::delete_book,
+        super::api::health_check,
     ),
     components(schemas(
         bis_in_memory::models::Book,
