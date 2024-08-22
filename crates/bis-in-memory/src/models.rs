@@ -1,23 +1,27 @@
 use std::collections::{hash_map, HashMap};
 
+use serde::{Deserialize, Serialize};
+
 #[derive(Default)]
 pub struct Store {
+    //TODO: This should likely just be a mutex of some kind
     book_store: HashMap<i32, Book>,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Book {
     pub id: i32,
     pub title: String,
     pub author: String,
-    pub date_published: time::Date,
+    #[serde(with = "simple_date_format")]
+    pub date_published: chrono::NaiveDate,
 }
 
 #[derive(Debug)]
 pub struct NewBook<'a> {
     pub title: &'a str,
     pub author: &'a str,
-    pub date_published: &'a time::Date,
+    pub date_published: &'a chrono::NaiveDate,
 }
 
 impl Store {
@@ -82,5 +86,29 @@ impl Store {
         }
 
         max_id
+    }
+}
+
+pub mod simple_date_format {
+    use chrono::NaiveDate;
+    use serde::{Deserialize, Deserializer, Serializer};
+
+    const FORMAT: &str = "%Y-%m-%d";
+
+    pub fn serialize<S>(date: &NaiveDate, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: Serializer,
+    {
+        let s = format!("{}", date.format(FORMAT));
+        serializer.serialize_str(&s)
+    }
+
+    pub fn deserialize<'de, D>(deserializer: D) -> Result<NaiveDate, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        let s = String::deserialize(deserializer)?;
+        let dt = NaiveDate::parse_from_str(&s, FORMAT).map_err(serde::de::Error::custom)?;
+        Ok(dt)
     }
 }

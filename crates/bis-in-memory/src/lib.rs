@@ -1,5 +1,4 @@
 use models::{Book, NewBook, Store};
-use time::Date;
 
 pub mod models;
 
@@ -7,7 +6,12 @@ pub fn establish_connection() -> Store {
     Store::new()
 }
 
-pub fn create_book(conn: &mut Store, title: &str, author: &str, date_published: &Date) -> Book {
+pub fn create_book(
+    conn: &mut Store,
+    title: &str,
+    author: &str,
+    date_published: &chrono::NaiveDate,
+) -> Book {
     let new_book = NewBook {
         title,
         author,

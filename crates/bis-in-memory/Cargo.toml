@@ -10,7 +10,8 @@ authors.workspace = true
 repository.workspace = true
 
 [dependencies]
-time = "0.3.36"
+chrono = "0.4.38"
+serde = { version = "1.0.208", features = ["derive"] }
 
 [lints]
 workspace = true

@@ -12,3 +12,11 @@ rust-version.workspace = true
 workspace = true
 
 [dependencies]
+serde = { version = "1.0.208", features = ["derive"] }
+chrono = "0.4.38"
+derive_more = "0.99.7"
+log = "0.4.22"
+env_logger = "0.11.5"
+actix-web = "4.9.0"
+bis-in-memory = { path = "../bis-in-memory" }
+dotenvy = "0.15.7"
