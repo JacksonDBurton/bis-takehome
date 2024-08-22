@@ -12,6 +12,8 @@ rust-version.workspace = true
 workspace = true
 
 [dependencies]
+utoipa = { version = "4.2.3", features = ["actix_extras"] }
+utoipa-swagger-ui = { version = "7.1.0", features = ["actix-web"] }
 serde = { version = "1.0.208", features = ["derive"] }
 chrono = "0.4.38"
 derive_more = "0.99.7"

@@ -1,5 +1,7 @@
 mod api;
+mod docs;
 mod error;
+
 use std::{env, io, sync::Mutex};
 
 use actix_web::{
@@ -8,7 +10,10 @@ use actix_web::{
     App, HttpServer,
 };
 use bis_in_memory::{establish_connection, models::NewBook};
+use docs::ApiDoc;
 use dotenvy::dotenv;
+use utoipa::OpenApi;
+use utoipa_swagger_ui::SwaggerUi;
 
 // Name of the application
 const APP_NAME: &str = env!("CARGO_PKG_NAME");
@@ -26,10 +31,8 @@ async fn main() -> io::Result<()> {
     // let database_url = env::var("DATABASE_URL").expect("DATABASE_URL must be set");
     // let pool = db::init_pool
 
-    let conn = web::Data::new(api::MutStore {
-        mtx: Mutex::new(establish_connection()),
-    });
-    conn.mtx.lock().unwrap().create_book(NewBook {
+    let conn = web::Data::new(establish_connection());
+    conn.create_book(NewBook {
         title: "Jack Burton",
         author: "Also Jack Burton",
         date_published: &chrono::offset::Utc::now().naive_utc().date(),
@@ -61,6 +64,10 @@ async fn main() -> io::Result<()> {
                     .route("", web::post().to(api::create_book))
                     .route("", web::put().to(api::update_book))
                     .route("", web::delete().to(api::delete_book)),
+            )
+            .service(
+                SwaggerUi::new("/swagger-ui/{_:.*}")
+                    .url("/api-docs/openapi.json", ApiDoc::openapi()),
             )
     })
     .bind(("127.0.0.1", 8080))?
