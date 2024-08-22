@@ -3,7 +3,7 @@ mod configuration;
 mod docs;
 mod error;
 
-use std::{env, io, sync::Mutex};
+use std::{env, io};
 
 use actix_web::{
     middleware::Logger,

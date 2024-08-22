@@ -3,7 +3,7 @@ use derive_more::Display;
 
 #[derive(Debug, Display)]
 pub enum ApiError {
-    #[display(fmt = "Custom Error 1")]
+    #[display("Custom Error 1")]
     CustomOne,
 }
 
