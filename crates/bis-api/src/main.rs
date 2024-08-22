@@ -1,4 +1,5 @@
 mod api;
+mod configuration;
 mod docs;
 mod error;
 
@@ -10,6 +11,7 @@ use actix_web::{
     App, HttpServer,
 };
 use bis_in_memory::{establish_connection, models::NewBook};
+use configuration::get_configuration;
 use docs::ApiDoc;
 use dotenvy::dotenv;
 use utoipa::OpenApi;
@@ -23,6 +25,11 @@ const APP_NAME: &str = env!("CARGO_PKG_NAME");
 
 #[actix_web::main]
 async fn main() -> io::Result<()> {
+    let configuration = get_configuration().expect("Failed to read configuration.");
+    let address = format!(
+        "{}:{}",
+        configuration.application.host, configuration.application.port
+    );
     dotenv().ok();
     // Setup logger
     env_logger::init_from_env(env_logger::Env::new().default_filter_or("info"));
@@ -55,7 +62,6 @@ async fn main() -> io::Result<()> {
         App::new()
             .app_data(conn.clone())
             .wrap(Logger::default())
-            // TODO: Replace this with some sort of landing page or documentation
             .service(web::resource("/").route(web::get().to(api::get_books)))
             .service(
                 web::scope("/bis")
@@ -70,7 +76,7 @@ async fn main() -> io::Result<()> {
                     .url("/api-docs/openapi.json", ApiDoc::openapi()),
             )
     })
-    .bind(("127.0.0.1", 8080))?
+    .bind(address)?
     .run()
     .await
 }
