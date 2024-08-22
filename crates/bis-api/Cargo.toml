@@ -22,4 +22,3 @@ log = "0.4.22"
 env_logger = "0.11.5"
 actix-web = "4.9.0"
 bis-in-memory = { path = "../bis-in-memory" }
-dotenvy = "0.15.7"
