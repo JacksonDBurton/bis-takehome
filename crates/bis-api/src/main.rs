@@ -1,22 +1,15 @@
 mod api;
 mod configuration;
 mod docs;
-mod error;
 mod startup;
 
 use std::{env, io, net::TcpListener};
 
-use actix_web::{
-    middleware::Logger,
-    web::{self},
-    App, HttpServer,
-};
 use bis_in_memory::{
     establish_connection,
     models::{NewBook, Store},
 };
 use configuration::get_configuration;
-use docs::ApiDoc;
 use startup::run;
 
 // Name of the application

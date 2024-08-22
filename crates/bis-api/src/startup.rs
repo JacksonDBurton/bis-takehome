@@ -5,7 +5,10 @@ use bis_in_memory::models::Store;
 use utoipa::OpenApi;
 use utoipa_swagger_ui::SwaggerUi;
 
-use crate::{api, docs::ApiDoc};
+use crate::{
+    api::{self},
+    docs::ApiDoc,
+};
 
 pub fn run(listener: TcpListener, pool: Store) -> Result<Server, std::io::Error> {
     let pool = web::Data::new(pool);
@@ -26,6 +29,10 @@ pub fn run(listener: TcpListener, pool: Store) -> Result<Server, std::io::Error>
                     .url("/api-docs/openapi.json", ApiDoc::openapi()),
             )
             .app_data(pool.clone())
+        // You can overwrite actix default behavior for validation errors (Serde) within json
+        // here I chose to forgo improving this behavior but I want to acknowledge that the
+        // default is not realisticly sufficient for production.
+        // .app_data(web::JsonConfig::default().error_handler(|_, _| error::ErrorBadRequest("")))
     })
     .listen(listener)?
     .run();

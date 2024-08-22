@@ -6,8 +6,6 @@ use std::{
 use serde::{Deserialize, Serialize};
 use utoipa::ToSchema;
 
-// TODO: Consider your use of unwrap on the mutex here
-
 #[derive(Default)]
 pub struct Store {
     book_store: Mutex<HashMap<i32, Book>>,
