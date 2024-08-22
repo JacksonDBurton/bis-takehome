@@ -58,6 +58,10 @@ impl Store {
         self.book_store.get(id).cloned()
     }
 
+    pub fn get_books(&mut self) -> Vec<Book> {
+        self.book_store.clone().into_values().collect()
+    }
+
     pub fn delete_book(&mut self, ids: &[i32]) -> i32 {
         let mut deleted = 0;
         for id in ids {

@@ -24,6 +24,10 @@ pub fn get_book(conn: &mut Store, id: &i32) -> Option<Book> {
     conn.get_book(id)
 }
 
+pub fn get_books(conn: &mut Store) -> Vec<Book> {
+    conn.get_books()
+}
+
 pub fn update_book(conn: &mut Store, id: i32, book: Book) -> Option<i32> {
     conn.update_book(id, book)
 }
