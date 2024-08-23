@@ -68,7 +68,8 @@ With requirements in mind certain aspects will decide on the overall quality of 
 - Maintainability
 - Encapsulation
 - Adaptability
-  These three quality goals ensure that this project could be adapted from a Book Information Store, with an in-memory storage solution. To any REST API focused on interacting with a Database.
+
+These three quality goals ensure that this project could be adapted from a Book Information Store, with an in-memory storage solution. To any REST API focused on interacting with a Database.
 
 ## 2. Constraints
 
