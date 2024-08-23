@@ -1,5 +1,5 @@
 use actix_web::{
-    error, http::StatusCode, web, HttpRequest, HttpResponse, Responder, ResponseError, Result,
+    http::StatusCode, web, HttpRequest, HttpResponse, Responder, ResponseError, Result,
 };
 use bis_in_memory::models::{Book, NewBook, Store};
 use serde::{Deserialize, Serialize};
@@ -135,11 +135,16 @@ pub async fn get_books(pool: web::Data<Store>, _: HttpRequest) -> Result<HttpRes
         ("id" = i32, Path, description = "Book ID to retrieve from Database")
     )
 )]
-pub async fn get_book(pool: web::Data<Store>, path: web::Path<(i32,)>) -> Result<impl Responder> {
+pub async fn get_book(
+    pool: web::Data<Store>,
+    path: web::Path<(i32,)>,
+) -> Result<HttpResponse, BookError> {
     if let Some(book) = pool.get_book(&path.0) {
-        Ok(web::Json(book))
+        Ok(HttpResponse::Ok().json(book))
     } else {
-        Err(error::ErrorNotFound(format!("No book with id: {}", path.0)))
+        Err(BookError::NotFound(
+            "No book found with matching id".to_string(),
+        ))
     }
 }
 
@@ -161,10 +166,12 @@ pub struct ListIds {
 pub async fn delete_book(
     pool: web::Data<Store>,
     del_list: web::Json<ListIds>,
-) -> Result<impl Responder> {
+) -> Result<HttpResponse, BookError> {
     let del_count = pool.delete_book(&del_list.into_inner().ids);
     if del_count == 0 {
-        Err(error::ErrorNotFound("No books were found for deletion"))
+        Err(BookError::NotFound(
+            "No books found matching listed ids".to_string(),
+        ))
     } else {
         Ok(HttpResponse::Ok().body(format!("{} books were deleted", del_count)))
     }
