@@ -35,7 +35,6 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      security-events: write
 
     env:
       SBOM_FILE: sbom.${{ inputs.sbom-format }}.json
