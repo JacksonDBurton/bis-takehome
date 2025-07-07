@@ -6,7 +6,7 @@ on:
   
 jobs:
   scan:
-    uses: ./.github/workflows/anchore-sbom-scan.yml
+    uses: ./.github/workflows/sbom.yml
     with:
       scan-target: docker
       image-tag: my-release:latest
