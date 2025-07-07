@@ -25,6 +25,11 @@ on:
         required: true
         type: string
 
+      artifact-name:
+        description: 'SBOM Artifact File Name (Defaults to sbom.{{ inputs.sbom-format }}.json)'
+        required: false
+        type: string
+
     outputs:
       sbom-file:
         description: 'Path to the generated SBOM file'
@@ -58,4 +63,4 @@ jobs:
           image: ${{ inputs.scan-target == 'docker' && inputs.image-tag || '' }}
           path: ${{ inputs.scan-target == 'dir' && inputs.directory || '' }}
           format: ${{ inputs.sbom-format }}
-          artifact-name: ${{ env.SBOM_FILE }}
+          artifact-name: ${{ inputs.artifact-name || env.SBOM_FILE }}

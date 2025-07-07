@@ -9,3 +9,4 @@ jobs:
     with:
       scan-target: dir
       sbom-format: syft-text
+      artifact-name: bis-takehome.sbom.txt
