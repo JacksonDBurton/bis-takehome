@@ -1,0 +1,11 @@
+name: SBOM on DIR
+
+on:
+  workflow_dispatch:
+
+jobs:
+  scan:
+    uses: ./.github/workflows/sbom.yml
+    with:
+      scan-target: dir
+      sbom-format: spdx-json
