@@ -11,15 +11,3 @@ jobs:
       scan-target: docker
       image-tag: my-release:latest
       sbom-format: syft-json
-
-  attach-artifacts:
-    name: Upload SBOM 
-    needs: scan
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Download SBOM
-        uses: actions/download-artifact@v4
-        with:
-          name: sbom
-          path: artifacts
