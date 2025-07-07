@@ -63,4 +63,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: sbom
-          path: bis-takehome-sbom.syft.json
+          path: my-release_latest.syft-json
