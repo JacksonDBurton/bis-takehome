@@ -58,6 +58,7 @@ jobs:
           image: ${{ inputs.scan-target == 'docker' && inputs.image-tag || '' }}
           path: ${{ inputs.scan-target == 'dir' && inputs.directory || '' }}
           format: ${{ inputs.sbom-format }}
+          artifact-name: sbom
 
       - name: Upload SBOM as artifact
         uses: actions/upload-artifact@v4
