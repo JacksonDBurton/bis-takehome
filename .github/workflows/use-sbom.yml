@@ -1,0 +1,33 @@
+
+name: SBOM on Release
+
+on:
+  release:
+    types: [created]
+
+jobs:
+  scan:
+    uses: ./.github/workflows/anchore-sbom-scan.yml
+    with:
+      scan-target: docker
+      image-tag: my-release:latest
+      sbom-format: syft-json
+
+  attach-artifacts:
+    name: Upload SBOM 
+    needs: scan
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Download SBOM
+        uses: actions/download-artifact@v4
+        with:
+          name: sbom
+          path: artifacts
+
+      - name: Upload to GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            artifacts/*.json
+

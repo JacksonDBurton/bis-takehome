@@ -1,0 +1,69 @@
+name: Anchore SBOM 
+
+on:
+  workflow_call:
+    inputs:
+      scan-target:
+        description: 'What to scan: "docker" or "dir"'
+        required: true
+        type: string
+
+      image-tag:
+        description: 'Docker image tag (if scan-target is docker)'
+        required: false
+        type: string
+        default: 'localbuild:latest'
+
+      directory:
+        description: 'Directory to scan (if scan-target is dir)'
+        required: false
+        type: string
+        default: '.'
+
+      sbom-format:
+        description: 'SBOM format (e.g. syft-json, spdx-json, cyclonedx-json)'
+        required: true
+        type: string
+
+    outputs:
+      sbom-file:
+        description: 'Path to the generated SBOM file'
+        value: sbom.${{ inputs.sbom-format }}.json
+
+jobs:
+  sbom-and-scan:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
+
+    env:
+      SBOM_FILE: sbom.${{ inputs.sbom-format }}.json
+      SARIF_FILE: results.sarif
+      IMAGE_TAG: ${{ inputs.image-tag }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        if: ${{ inputs.scan-target == 'docker' }}
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build Docker image
+        if: ${{ inputs.scan-target == 'docker' }}
+        run: docker build -t $IMAGE_TAG .
+
+      - name: Generate SBOM
+        uses: anchore/sbom-action@v0.15.3
+        with:
+          image: ${{ inputs.scan-target == 'docker' && inputs.image-tag || '' }}
+          path: ${{ inputs.scan-target == 'dir' && inputs.directory || '' }}
+          format: ${{ inputs.sbom-format }}
+          artifact-name: ${{ env.SBOM_FILE }}
+
+      - name: Upload SBOM as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: sbom
+          path: ${{ env.SBOM_FILE }}
