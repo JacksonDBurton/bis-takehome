@@ -2,9 +2,8 @@
 name: SBOM on Release
 
 on:
-  release:
-    types: [created]
-
+  workflow_dispatch:
+  
 jobs:
   scan:
     uses: ./.github/workflows/anchore-sbom-scan.yml
@@ -24,10 +23,3 @@ jobs:
         with:
           name: sbom
           path: artifacts
-
-      - name: Upload to GitHub Release
-        uses: softprops/action-gh-release@v1
-        with:
-          files: |
-            artifacts/*.json
-
