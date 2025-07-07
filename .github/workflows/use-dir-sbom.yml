@@ -8,4 +8,4 @@ jobs:
     uses: ./.github/workflows/sbom.yml
     with:
       scan-target: dir
-      sbom-format: spdx-json
+      sbom-format: syft-text
