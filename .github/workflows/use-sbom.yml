@@ -18,3 +18,4 @@ jobs:
     needs: sbom
     with: 
       sbom-file: syft.sbom.json
+      sbom-artifact: syft.sbom.json
