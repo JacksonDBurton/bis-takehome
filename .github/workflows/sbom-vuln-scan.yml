@@ -27,6 +27,10 @@ jobs:
     name: Upload SBOM + SARIF to Release
     needs: scan
     runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: write
+
 
     steps:
       - name: Download SBOM
@@ -46,5 +50,3 @@ jobs:
         with:
           files: |
             artifacts/.
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
