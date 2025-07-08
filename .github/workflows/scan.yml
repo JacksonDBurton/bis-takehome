@@ -1,0 +1,71 @@
+name: Anchore SCAN
+
+on:
+  workflow_call:
+    inputs:
+      sbom-artifact:
+        description: 'Name of SBOM artifact to scan'
+        required: false
+        type: string
+        default: 'sbom'
+      
+      sbom-file:
+        description: 'Path to the SBOM file to scan'
+        required: true
+        type: string
+
+      severity-cutoff:
+        description: 'Fail if vulnerability >= this severity'
+        required: false
+        type: string
+        default: 'medium'
+
+      fail-build:
+        description: 'Whether to fail build on vulnerabilities'
+        required: false
+        type: boolean
+        default: false
+
+      sarif-artifact:
+        description: 'Name of artifact to save SARIF file to'
+        required: false
+        type: string
+        default: 'sarif'
+
+      sarif-name:
+        description: 'SARIF artifact file name (e.g., results.sarif)'
+        required: false
+        type: string
+        default: 'results.sarif'
+
+    outputs:
+      sarif-file:
+        description: 'Path to the generated SARIF file'
+        value: ${{ inputs.sarif-name }}
+      
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - name: Download SBOM artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ inputs.sbom-artifact }}
+          path: .
+
+      - name: Scan SBOM
+        uses: anchore/scan-action@v6
+        with:
+          sbom: ${{ inputs.sbom-file }}
+          severity-cutoff: ${{ inputs.severity-cutoff }}
+          fail-build: ${{ inputs.fail-build }}
+          output-file: ${{ inputs.sarif-name }}
+
+      - name: Upload SARIF as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ inputs.sarif-artifact }}
+          path: ${{ inputs.sarif-name }}

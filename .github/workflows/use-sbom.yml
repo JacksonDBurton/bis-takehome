@@ -5,9 +5,16 @@ on:
   workflow_dispatch:
   
 jobs:
-  scan:
+  sbom:
     uses: ./.github/workflows/sbom.yml
     with:
       scan-target: docker
       image-tag: my-release:latest
       sbom-format: syft-json
+      sbom-name: syft.sbom.json
+
+  scan:
+    uses: ./.github/workflows/sbom.yml
+    needs: sbom
+    with: 
+      sbom-file: syft.sbom.json
