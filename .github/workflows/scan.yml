@@ -5,9 +5,8 @@ on:
     inputs:
       sbom-artifact:
         description: 'Name of SBOM artifact to scan'
-        required: false
+        required: true
         type: string
-        default: 'sbom'
       
       severity-cutoff:
         description: 'Fail if vulnerability >= this severity'
@@ -48,13 +47,13 @@ jobs:
       - name: Download SBOM artifact
         uses: actions/download-artifact@v4
         with:
-          name: ${{ inputs.sbom-file }}
+          name: ${{ inputs.sbom-artifact }}
           path: .
 
       - name: Scan SBOM
         uses: anchore/scan-action@v6
         with:
-          sbom: ${{ inputs.sbom-file }}
+          sbom: ${{ inputs.sbom-artifact }}
           severity-cutoff: ${{ inputs.severity-cutoff }}
           fail-build: ${{ inputs.fail-build }}
           output-file: ${{ inputs.sarif-name }}

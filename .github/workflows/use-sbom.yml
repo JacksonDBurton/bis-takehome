@@ -17,4 +17,4 @@ jobs:
     uses: ./.github/workflows/scan.yml
     needs: sbom
     with: 
-      sbom-file: syft.sbom.json
+      sbom-artifact: syft.sbom.json
