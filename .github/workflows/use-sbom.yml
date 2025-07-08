@@ -11,11 +11,10 @@ jobs:
       scan-target: docker
       image-tag: my-release:latest
       sbom-format: syft-json
-      sbom-name: syft.sbom.json
+      artifact-name: syft.sbom.json
 
   scan:
     uses: ./.github/workflows/scan.yml
     needs: sbom
     with: 
       sbom-file: syft.sbom.json
-      sbom-artifact: syft.sbom.json
