@@ -6,7 +6,7 @@ on:
   
 jobs:
   sbom:
-    uses: ./.github/workflows/sbom.yml@main
+    uses: ./.github/workflows/sbom.yml
     with:
       scan-target: docker
       image-tag: my-release:latest
@@ -14,7 +14,7 @@ jobs:
       artifact-name: syft.sbom.json
 
   scan:
-    uses: ./.github/workflows/scan.yml@main
+    uses: ./.github/workflows/scan.yml
     needs: sbom
     with: 
       sbom-artifact: syft.sbom.json
