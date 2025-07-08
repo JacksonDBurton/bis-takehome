@@ -6,7 +6,7 @@ on:
   
 jobs:
   sbom:
-    uses: SomosEngineering/gha-common/.github/workflows/syft-anchore-sbom.yml@main
+    uses: ./.github/workflows/sbom.yml@main
     with:
       scan-target: docker
       image-tag: my-release:latest
@@ -14,7 +14,7 @@ jobs:
       artifact-name: syft.sbom.json
 
   scan:
-    uses: SomosEngineering/gha-common/.github/workflows/grype-anchore-scan.yml@main
+    uses: ./.github/workflows/scan.yml@main
     needs: sbom
     with: 
       sbom-artifact: syft.sbom.json
