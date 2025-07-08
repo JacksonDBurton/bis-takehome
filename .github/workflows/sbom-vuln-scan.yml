@@ -1,0 +1,44 @@
+name: SBOM on Release
+
+on:
+  release:
+    types: created
+  
+jobs:
+  sbom:
+    uses: SomosEngineering/gha-common/.github/workflows/syft-anchore-sbom.yml@main
+    with:
+      scan-target: docker
+      image-tag: my-release:latest
+      sbom-format: syft-json
+      artifact-name: syft.sbom.json
+
+  scan:
+    uses: SomosEngineering/gha-common/.github/workflows/grype-anchore-scan.yml@main
+    needs: sbom
+    with: 
+      sbom-artifact: syft.sbom.json
+
+  attach-artifacts:
+    name: Upload SBOM + SARIF to Release
+    needs: scan
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Download SBOM
+        uses: actions/download-artifact@v4
+        with: 
+          name: syft.sbom.json
+          path: artifacts
+
+      - name: Download SARIF
+        uses: actions/download-artifact@v4
+        with:
+          name: sarif
+          path: artifacts
+
+      - name: Upload to Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            artifacts/.
