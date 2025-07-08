@@ -64,3 +64,5 @@ jobs:
           path: ${{ inputs.scan-target == 'dir' && inputs.directory || '' }}
           format: ${{ inputs.sbom-format }}
           artifact-name: ${{ inputs.artifact-name || env.SBOM_FILE }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
