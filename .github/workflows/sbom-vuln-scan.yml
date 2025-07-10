@@ -25,7 +25,7 @@ jobs:
       sbom-artifact: syft.sbom.json
 
   attach-artifacts:
-    name: Upload SBOM + SARIF to Release
+    name: Upload SARIF to Release
     needs: scan
     runs-on: ubuntu-latest
     permissions:
@@ -44,4 +44,3 @@ jobs:
         with:
           files: |
             artifacts/*
-            artifacts/results.sarif
